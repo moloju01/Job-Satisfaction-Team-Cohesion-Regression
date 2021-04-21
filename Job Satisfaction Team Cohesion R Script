@@ -1,0 +1,56 @@
+
+setwd("/Users/justinamolokwu/Downloads")
+teamco<-read.csv("JobSat_TeamCo.csv")
+
+
+####################### Regressions ##############################
+
+#using Teamco, can team cohesion predict job satisfaction?
+cohreg<-lm(teamco$Job.Satisfaction ~ teamco$Team.Cohesion)
+summary(cohreg)
+#is signicant, explains 69.5% of variance in job satisfaction
+
+comreg<-lm(teamco$Job.Satisfaction ~ teamco$Team.Coh_Commit)
+summary(comreg)
+
+#UnLabeled Plot
+plot(teamco$Team.Cohesion, teamco$Job.Satisfaction)
+abline(cohreg, col = "red")
+
+
+#Labeled Plot
+Cohesion<-teamco$Team.Cohesion
+JobSat<-teamco$Job.Satisfaction
+plot(Cohesion, JobSat, main = "Team Cohesion Predicting Job Satisfaction", xlab = "Team Cohesion", ylab = "Job Satisfaction")
+cohreg2<-lm(JobSat~Cohesion)
+abline(cohreg2, col = "blue")
+
+
+#using our Teamco Data, can multiple factors predict job satisfaction?
+cohcomreg<-lm(teamco$Job.Satisfaction ~ teamco$Team.Cohesion + teamco$Team.Coh_Commit, data = teamco)
+summary(cohcomreg)
+
+
+#Cohcomreg Scatter Plot
+Cohesion<-teamco$Team.Cohesion
+JobSat<-teamco$Job.Satisfaction
+plot(Cohesion, JobSat, main = "Team Cohesion & Team Commitment Predicting Job Satisfaction", xlab = "Team Cohesion and Team Commitment", ylab = "Job Satisfaction", xlim=c(0,5), ylim=c(0,5))
+cohreg2<-lm(JobSat~Cohesion)
+par(new=TRUE)
+Commitment<-teamco$Team.Coh_Commit
+JobSat<-teamco$Job.Satisfaction
+plot(Commitment, JobSat, main = "Team Cohesion & Team Commitment Predicting Job Satisfaction", xlab = "Team Cohesion and Team Commitment", ylab = "Job Satisfaction", xlim=c(0,5), ylim=c(0,5))
+comreg2<-lm(JobSat~Commitment)
+abline(a=-1.5795, b=1.2541, col = "red")
+
+
+#Comparing the two models we ran
+library(rcompanion)
+compareLM(cohreg, cohcomreg)
+
+
+library(QuantPsyc)
+lm.beta(cohreg)
+
+library(QuantPsyc)
+lm.beta(cohcomreg)
